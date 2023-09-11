@@ -2,8 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { CommonContexts, ClickOutSideContext } from "../contexts/contexts"
 import { Link } from "react-router-dom";
 
-
-export default function Header({index}) {
+export default function Header({index}) {  
   const user = useContext(CommonContexts).user;
   const setUser = useContext(CommonContexts).setUser;
   const clickOutSide = useContext(ClickOutSideContext);
@@ -42,7 +41,7 @@ export default function Header({index}) {
         <div className='flex flex-row gap-3 items-center'>
           
           <div className=''>
-            <Link to={''}>
+            <Link to={'/'}>
               <img src='/fb.ico' className='w-14'></img>
             </Link>            
           </div>

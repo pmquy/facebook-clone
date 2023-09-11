@@ -1,6 +1,6 @@
-import { useContext, useRef, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { login } from "./databases/users";
+import { login } from "./apis/users";
 import { CommonContexts } from "./contexts/contexts";
 
 export default function Login() {
@@ -8,7 +8,12 @@ export default function Login() {
   const usernameRef = useRef();
   const passwordRef = useRef();
   const [loginState, setLoginState] = useState(0);
-  const {setUser} = useContext(CommonContexts)
+  const {setUser, user} = useContext(CommonContexts);
+
+  useEffect(() => {
+    if(user)
+      navigate('/');
+  }, [])
 
   const handleLogin = async () => {
     const username = usernameRef.current.value;
@@ -23,6 +28,8 @@ export default function Login() {
       const user = await login({username:username, password:password});
       if(!user)
         setLoginState(4);
+      usernameRef.current.value = '';
+      passwordRef.current.value = '';
       setUser(user);
       navigate('/');
     }
@@ -32,7 +39,7 @@ export default function Login() {
     <div className=" min-h-screen bg-zinc-800 flex flex-row justify-center items-center">
       <form onSubmit={async (e) => {e.preventDefault(); await handleLogin()}} className=" flex flex-col justify-center items-center p-10 border-2 border-white rounded-lg">
         <input ref={usernameRef} placeholder="username" className={`${(loginState==1 || loginState==2) ? ' border-2 border-red-600' : ''} box-border p-3 indent-4 rounded-lg my-2`}></input>                
-        <input ref={passwordRef} placeholder="password" className={`${(loginState==1 || loginState==3) ? ' border-2 border-red-600' : ''} box-border p-3 indent-4 rounded-lg my-2`}></input>                
+        <input type="password" ref={passwordRef} placeholder="password" className={`${(loginState==1 || loginState==3) ? ' border-2 border-red-600' : ''} box-border p-3 indent-4 rounded-lg my-2`}></input>                
         {loginState==4 && 
         <div className=" text-white">
           Thông tin tài khoản hoặc mật khẩu không chính xác

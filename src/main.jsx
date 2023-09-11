@@ -12,8 +12,13 @@ import Group from './Group'
 import Create from './Create'
 import Login from './Login'
 import App from './components/App'
+import User from './User'
 
 const router = createBrowserRouter([
+  {
+    path : '/user/:id',
+    element : <App><Layout><User/></Layout></App>
+  },
   {
     path : '/',
     element : <App><Layout index={1}><Home/></Layout></App>,
