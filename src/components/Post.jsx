@@ -1,9 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { useQuery } from "react-query";
 import { getUserById } from "../apis/users";
-import {getComments, createComment} from "../databases/comment";
+import {getComments, createComment} from "../apis/comment";
 import { ClickOutSideContext, CommonContexts } from "../contexts/contexts";
 import Comment from "./Comment";
+import { Link } from "react-router-dom";
 
 export default function Post ({post}) {
   const [like, setLike] = useState(false);
@@ -43,7 +44,9 @@ export default function Post ({post}) {
       <div className="p-4 bg-neutral-700 rounded-lg flex flex-col">
         
         <div className=" flex flex-row gap-1 items-center">
-          <img src={postUser.photoURL} className=" w-12 rounded-full"></img>
+          <Link to={`/user/${postUser._id}`}>
+            <img src={postUser.photoURL} className=" w-12 rounded-full"></img>
+          </Link>
           <p className=" text-2xl">{postUser.username}</p>
         </div>
 
