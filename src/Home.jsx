@@ -3,6 +3,7 @@ import {getPosts, addPost} from './apis/posts'
 import Post from './components/Post'
 import {ClickOutSideContext, CommonContexts} from './contexts/contexts'
 import { useQuery } from "react-query";
+import { Link } from 'react-router-dom';
 
 
 export default function Home() {
@@ -10,7 +11,6 @@ export default function Home() {
   const clickOutSide = useContext(ClickOutSideContext);
   const ref1 = useRef();
   const parentRef1 = useRef();
-  const [posts, setPosts] = useState([]);
   const [isQueryAgain, setQueryAgain] = useState(false);
   const inputRef = useRef();
   const [state1, setState1] = useState(false);
@@ -45,10 +45,10 @@ export default function Home() {
         <div className={`hidden lg:block`}>
           <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{height:'80vh'}}>  
             
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <Link to={`/user/${user._id}`} className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
               <img src={user.photoURL} className=' rounded-full w-10'></img>
               <p className=' hidden group-hover:block'>{user.username}</p>
-            </a>          
+            </Link>          
             
             <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
               <img src='/friends.png' className='w-10'></img>
@@ -105,7 +105,9 @@ export default function Home() {
 
         <div className='lg:basis-6/12 flex flex-col basis-11/12'>          
           <div className='p-4 bg-neutral-700 rounded-lg my-5 flex flex-row gap-5'>
-            <img src={user.photoURL} className=' rounded-full w-12'></img>                
+            <Link to={`/user/${user._id}`}>
+              <img src={user.photoURL} className=' rounded-full w-12'></img>                
+            </Link>
             <input ref={ref1} onClick={() => setState1(true)} readOnly className=' indent-4 h-full text-white outline-none placeholder:text-white w-full rounded-3xl bg-stone-400' placeholder={`${user.username} ơi, bạn đang nghĩ gì thế?`}></input>   
           </div>
 

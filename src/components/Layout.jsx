@@ -1,11 +1,11 @@
 import Header from "./Header"
 import { useContext, useEffect, useState} from "react"
 import { CommonContexts } from "../contexts/contexts";
-import {useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export default function Layout({children, index}) {  
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false); 
   const navigate = useNavigate();
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);   
   const {isDark, user} = useContext(CommonContexts);
   
   useEffect(() => {    
@@ -18,20 +18,18 @@ export default function Layout({children, index}) {
     }
     document.addEventListener('scroll', listener)
     return () => document.removeEventListener('scroll', listener)
-  }, [])
-  
+  }, [])  
+
   useEffect(() => {
     if(!user) {
       navigate('/user/login');
     }
-  }, [user])
+  }, [user])  
 
   if(!user)
     return (
-        <div className=" min-h-screen bg-zinc-800">
-
-        </div>
-      )
+      <div className=" min-h-screen bg-zinc-800"></div>
+    )
 
   return (
     <div className="bg-zinc-800 text-white">
