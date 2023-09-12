@@ -24,4 +24,16 @@ const createComment = async comment => {
   return res;
 }
 
-export {getComments, createComment};
+const deleteCommentById = async id => {
+  const res = await fetch(`http://localhost:3000/comments/${id}`, {
+    method : 'DELETE',
+    headers : {
+      'Accept' : 'application/json',
+      'Content-Type' : 'application/json',
+    },
+  })
+    .then(val => val.json());
+  return res;
+}
+
+export {getComments, createComment, deleteCommentById};
