@@ -24,4 +24,16 @@ const getPosts = async (queries={}) => {
   return res;
 }
 
-export {addPost, getPosts}
+const deletePostById = async (id) => {
+  const res = await fetch(`http://localhost:3000/posts/${id}`, {
+    method : 'DELETE',
+    headers : {
+      'Accept' : 'application/json',
+      'Content-Type' : 'application/json',
+    },
+  })
+    .then(val => val.json());
+  return res;
+}
+
+export {addPost, getPosts, deletePostById}

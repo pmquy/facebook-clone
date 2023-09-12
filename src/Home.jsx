@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div>
 
-      <div className={`${isDark ? 'brightness-50 ' : ''} flex flex-row justify-center`}>      
+      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} flex flex-row justify-center`}>      
         
         <div className={`hidden lg:block`}>
           <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{height:'80vh'}}>  
@@ -118,7 +118,7 @@ export default function Home() {
         
       </div>
       
-      <div ref={parentRef1} className={`${state1 ? '' : 'hidden'} fixed w-4/6 rounded-lg bg-zinc-600 p-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}>
+      <div ref={parentRef1} className={`${state1 ? '' : 'hidden'} z-20 fixed w-4/6 rounded-lg bg-zinc-600 p-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}>
         
         <p className=' font-bold text-3xl border-b-2 my-2 text-center py-2'>Tạo bài viết</p>
         
