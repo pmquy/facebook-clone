@@ -34,7 +34,7 @@ export default function Login() {
       usernameRef.current.value = '';
       passwordRef.current.value = '';
       setUser(user);
-      if(location.state.from) {
+      if(location.state && location.state.from) {
         navigate(location.state.from);
       }
       else {

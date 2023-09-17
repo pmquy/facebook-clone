@@ -16,7 +16,7 @@ export default function Post ({post}) {
   const [isQueryAgain, setIsQueryAgain] = useState(true);
   const parentRef = useRef();
   const ref = useRef();
-  const {user, setIsDark} = useContext(CommonContexts);
+  const {user} = useContext(CommonContexts);
   const clickOutSide = useContext(ClickOutSideContext);
   clickOutSide([parentRef, ref], () => {setIsPostReading(false)});  
 
@@ -53,14 +53,16 @@ export default function Post ({post}) {
   
   return (
     <div>
-      <div className=" group relative">
-        <button className="absolute right-0 top-0 w-12 rounded-full hover:bg-slate-400 transition-all">
-          <img src="/dots.png"></img>
-        </button>
-        <div className="hidden group-hover:block absolute -translate-y-full rounded-lg top-0 right-0 bg-green-600 p-5">
-          <button onClick={deletePost} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
-        </div>
-      </div>      
+      {post.userId == user._id && 
+        <div className=" group relative">
+          <button className="absolute right-0 top-0 w-12 rounded-full hover:bg-slate-400 transition-all">
+            <img src="/dots.png"></img>
+          </button>
+          <div className="hidden group-hover:block absolute -translate-y-full rounded-lg top-0 right-0 bg-green-600 p-5">
+            <button onClick={deletePost} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
+          </div>
+        </div>      
+      }
 
       <div className="p-4 bg-neutral-700 rounded-lg flex flex-col">
         
