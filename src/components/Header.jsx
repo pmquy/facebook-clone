@@ -3,8 +3,7 @@ import { CommonContexts, ClickOutSideContext } from "../contexts/contexts"
 import { Link } from "react-router-dom";
 
 export default function Header({index}) {  
-  const user = useContext(CommonContexts).user;
-  const setUser = useContext(CommonContexts).setUser;
+  const {user, setUser} = useContext(CommonContexts);  
   const clickOutSide = useContext(ClickOutSideContext);
   const ref1 = useRef();
   const ref2 = useRef();
@@ -143,7 +142,7 @@ export default function Header({index}) {
             </div>
             <div ref={ref2} className={` ${state2 ? 'block' : 'hidden'} rounded-lg z-50 absolute bg-slate-400 right-0 translate-y-3`}>
               <div className="p-10">
-                <p>Messenger</p>
+                <Link to={'/groupchat'} className=" bg-red-600 p-5 rounded-lg">GroupChat</Link>
               </div>
             </div> 
           </div>
@@ -164,7 +163,7 @@ export default function Header({index}) {
           
           <div ref={parentRef4} onClick={() => setState4(true)} className='p-2 transition-all  group relative' href="/"> 
             <img src={user.photoURL} className='w-10 rounded-full'></img>
-            <div className={state4 ? 'hidden':' bg-slate-400 rounded-lg overflow-hidden absolute max-h-0 duration-500  group-hover:max-h-full transition-all group-hover:block z-10 right-0 translate-y-3'}>
+            <div className={state4 ? 'hidden':' bg-slate-400 rounded-lg overflow-hidden absolute max-h-0 duration-500  group-hover:max-h-full transition-all right-0 translate-y-3'}>
               <div className=" relative after:absolute after:h-1 after:w-0  after:bottom-0 after:delay-500 after:duration-500 group-hover:after:w-full after:transition-all after:bg-green-600">
                 <p className='p-3 whitespace-nowrap'>Tài khoản</p>
               </div>

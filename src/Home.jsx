@@ -4,17 +4,17 @@ import Post from './components/Post'
 import {ClickOutSideContext, CommonContexts} from './contexts/contexts'
 import { useQuery } from "react-query";
 import { Link } from 'react-router-dom';
+import UserImage from './components/UserImage';
 
 
 export default function Home() {
-  const {user, setIsDark, isDark} = useContext(CommonContexts);
+  const {user, setIsDark, isDark, isHeaderHidden} = useContext(CommonContexts);
   const clickOutSide = useContext(ClickOutSideContext);
-  const ref1 = useRef();
-  const parentRef1 = useRef();
-  const [isQueryAgain, setQueryAgain] = useState(false);
+  const ref1 = useRef();const parentRef1 = useRef();
+  clickOutSide([ref1, parentRef1], () => setState1(false));
   const inputRef = useRef();
   const [state1, setState1] = useState(false);
-  const {isLoading, error, data} = useQuery(['posts', isQueryAgain], () => getPosts({}));
+  const {isLoading, error, data, refetch} = useQuery(['posts'], () => getPosts({}));
 
   useEffect(() => {
     if(inputRef.current && ref1.current) {
@@ -32,7 +32,6 @@ export default function Home() {
     }
   }, [state1])
 
-  clickOutSide([ref1, parentRef1], () => setState1(false));
   
   if(isLoading || error)
     return <></>
@@ -40,74 +39,71 @@ export default function Home() {
   return (
     <div>
 
-      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} flex flex-row justify-center`}>      
-        
-        <div className={`hidden lg:block`}>
-          <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{height:'80vh'}}>  
-            
-            <Link to={`/user/${user._id}`} className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src={user.photoURL} className=' rounded-full w-10'></img>
-              <p className=' hidden group-hover:block'>{user.username}</p>
-            </Link>          
-            
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/friends.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Bạn bè</p>
-            </a>
+      <div className={`hidden lg:block ${isDark ? 'pointer-events-none brightness-50' : ''} `}>
+        <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{height:'80vh'}}>  
+          
+          <Link to={`/user/${user._id}`} className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src={user.photoURL} className=' rounded-full w-10'></img>
+            <p className=' hidden group-hover:block'>{user.username}</p>
+          </Link>          
+          
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/friends.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Bạn bè</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/schedule.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Kỷ niệm</p>
-            </a>                
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/schedule.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Kỷ niệm</p>
+          </a>                
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/save.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Đã lưu</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/save.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Đã lưu</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/group.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Nhóm</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/group.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Nhóm</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/video.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Video</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/video.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Video</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/gaming.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Chơi game</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/gaming.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Chơi game</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/marketplace.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Marketplace</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/marketplace.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Marketplace</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/messenger.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Messenger</p>
-            </a>
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/messenger.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Messenger</p>
+          </a>
 
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/event.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Sự kiện</p>
-            </a>
-            
-            <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-              <img src='/flag.png' className='w-10'></img>
-              <p className=' hidden group-hover:block'>Trang</p>
-            </a>
-                      
-          </div>
-        </div>              
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/event.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Sự kiện</p>
+          </a>
+          
+          <a href='#' className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
+            <img src='/flag.png' className='w-10'></img>
+            <p className=' hidden group-hover:block'>Trang</p>
+          </a>
+                    
+        </div>
+      </div>      
 
+      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} flex flex-row justify-center`}>              
         <div className='lg:basis-6/12 flex flex-col basis-11/12'>          
-          <div className='p-4 bg-neutral-700 rounded-lg my-5 flex flex-row gap-5'>
-            <Link to={`/user/${user._id}`}>
-              <img src={user.photoURL} className=' rounded-full w-12'></img>                
-            </Link>
+          <div className={`p-4 bg-blue-600 rounded-lg my-5 flex z-10 sticky ${isHeaderHidden ? 'top-0 ' : 'top-16'} transition-all flex-row gap-5`}>
+            <UserImage user={user}/>
             <input ref={ref1} onClick={() => setState1(true)} readOnly className=' indent-4 h-full text-white outline-none placeholder:text-white w-full rounded-3xl bg-stone-400' placeholder={`${user.username} ơi, bạn đang nghĩ gì thế?`}></input>   
           </div>
 
@@ -115,7 +111,6 @@ export default function Home() {
             <Post className='' post={element}/>
           </div>)}
         </div>
-        
       </div>
       
       <div ref={parentRef1} className={`${state1 ? '' : 'hidden'} z-20 fixed w-4/6 rounded-lg bg-zinc-600 p-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}>
@@ -139,9 +134,9 @@ export default function Home() {
             e.preventDefault();
             if(inputRef.current.value) {
               await addPost({text : inputRef.current.value, userId : user._id})
+              refetch();
               setState1(false);
               inputRef.current.value = '';
-              setQueryAgain(!isQueryAgain);
             }
           }}>
           <textarea ref={inputRef} form='myForm' name='text' rows={5} className=' indent-4  text-white outline-none placeholder:text-white w-full bg-stone-400'></textarea>

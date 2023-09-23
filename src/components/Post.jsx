@@ -4,16 +4,15 @@ import { getUserById } from "../apis/users";
 import {getComments, createComment} from "../apis/comment";
 import { ClickOutSideContext, CommonContexts } from "../contexts/contexts";
 import Comment from "./Comment";
-import { Link } from "react-router-dom";
 import { formatDate } from "../utils/utils";
 import { deletePostById } from "../apis/posts";
 import { useNavigate } from "react-router-dom";
+import UserImage from "./UserImage";
 
 export default function Post ({post}) {
   const navigate = useNavigate();
   const [like, setLike] = useState(false);
   const [isPostReading, setIsPostReading] = useState(false);
-  const [isQueryAgain, setIsQueryAgain] = useState(true);
   const parentRef = useRef();
   const ref = useRef();
   const {user} = useContext(CommonContexts);
@@ -21,24 +20,23 @@ export default function Post ({post}) {
   clickOutSide([parentRef, ref], () => {setIsPostReading(false)});  
 
   const inputRef = useRef();
-  const {isLoading : isLoading1, error : error1, data : postUser} = useQuery(['postUser', post, isQueryAgain], () => getUserById(post.userId));  
-  const {isLoading : isLoading2, error : error2, data : postComments} = useQuery(['postComments', post, isQueryAgain], () => getComments({postId : post._id}))
+  const {isLoading : isLoading1, error : error1, data : postUser, refetch:refetch1} = useQuery(['postUser', post], () => getUserById(post.userId));  
+  const {isLoading : isLoading2, error : error2, data : postComments, refetch:refetch2} = useQuery(['postComments', post], () => getComments({postId : post._id}))
 
   useEffect(() => {
     if(isPostReading) {
       document.body.style.overflow = 'hidden';
       inputRef.current.focus();
-      // setIsDark(true)
     }
     else {
       document.body.style.overflow = 'auto';
-      // setIsDark(false);
     }
   }, [isPostReading])
 
   const addComment = async() => {
     if(inputRef.current.value) {
       await createComment({userId : user._id, postId : post._id, text : inputRef.current.value});
+      refetch2()
       inputRef.current.value = '';
     }
   }
@@ -67,9 +65,7 @@ export default function Post ({post}) {
       <div className="p-4 bg-neutral-700 rounded-lg flex flex-col">
         
         <div className=" flex flex-row gap-1 items-center">
-          <Link to={`/user/${postUser._id}`}>
-            <img src={postUser.photoURL} className=" w-12 rounded-full"></img>
-          </Link>
+          <UserImage user={postUser}/>
           <div>
             <p className=" text-2xl">{postUser.username}</p>
             <p>{formatDate(post.createAt)}</p>
@@ -126,10 +122,10 @@ export default function Post ({post}) {
       <div ref={parentRef} className={`${isPostReading ? 'block' : 'hidden'} z-10 rounded-lg fixed left-1/2 -translate-x-1/2 overflow-y-auto w-11/12 lg:w-2/3 top-32`} style={{maxHeight:'70vh'}}>
         <div className=" p-10 bg-slate-500 rounded-lg flex flex-col">
           
-          <form onSubmit={async e => {e.preventDefault(); await addComment(); setIsQueryAgain(!isQueryAgain);}}>
-            <div className=" flex flex-row items-center gap-2 text-black">
-              <img alt="user-image" src={user.photoURL} className=" w-12 rounded-full"></img>
-              <input placeholder="bình luận" name="text" ref={inputRef} className=" w-full rounded-lg indent-4 outline-none h-12"></input>
+          <form onSubmit={async e => {e.preventDefault(); await addComment();}}>
+            <div className=" flex flex-row items-center gap-2 ">
+              <UserImage user={user}/>
+              <input placeholder="bình luận" name="text" ref={inputRef} className=" text-black w-full rounded-lg indent-4 outline-none h-12"></input>
             </div>
           </form>
 

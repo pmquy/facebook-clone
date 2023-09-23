@@ -1,11 +1,11 @@
 import { useQuery } from "react-query"
 import { getUserById } from "../apis/users"
-import { Link } from "react-router-dom";
 import {formatDate} from '../utils/utils';
 import { deleteCommentById } from "../apis/comment";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CommonContexts } from "../contexts/contexts";
+import UserImage from "./UserImage";
 
 export default function Comment({comment}) {
   const navigate = useNavigate();
@@ -37,9 +37,7 @@ export default function Comment({comment}) {
 
       <div>
         <div className=" flex flex-row items-center gap-2 p-2 border-b border-white mb-2">
-          <Link to={`/user/${commentUser._id}`}>
-            <img src={commentUser.photoURL} className=" w-10 rounded-full" alt="comment-user"></img>
-          </Link>
+          <UserImage user={commentUser}/>
           <div>
             <p>{commentUser.username}</p>
             <p>{formatDate(comment.createAt)}</p>

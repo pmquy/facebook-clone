@@ -6,15 +6,12 @@ import { useNavigate , useLocation} from "react-router-dom";
 export default function Layout({children, index}) {  
   const navigate = useNavigate();
   const location = useLocation();
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);   
-  const {isDark, user} = useContext(CommonContexts);
+  const {isDark, user, isHeaderHidden, setIsHeaderHidden} = useContext(CommonContexts);
   
   useEffect(() => {    
-    const listener = () => {
-      if(window.scrollY > 1000)
-        setIsHeaderHidden(true);
-      else {
-        setIsHeaderHidden(false);
+    const listener = () => {      
+      if(setIsHeaderHidden != (window.scrollY > 1000)) {
+        setIsHeaderHidden(window.scrollY > 1000);
       }
     }
     document.addEventListener('scroll', listener)
@@ -35,7 +32,7 @@ export default function Layout({children, index}) {
   return (
     <div className="bg-zinc-800 text-white">
       
-      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-40 transition-all fixed top-0`}>
+      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-10 transition-all fixed top-0`}>
         <Header index={index}></Header>
       </div>
 

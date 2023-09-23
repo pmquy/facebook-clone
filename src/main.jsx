@@ -13,6 +13,7 @@ import Create from './Create'
 import Login from './Login'
 import App from './components/App'
 import User from './User'
+import GroupChat from './GroupChat'
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path : '/messenger',
     element : <App><Layout><Messenger/></Layout></App>
+  },
+  {
+    path : '/groupchat',
+    element : <App><Layout><GroupChat></GroupChat></Layout></App>
   },
   {
     path : '/marketplace',
@@ -51,8 +56,7 @@ const router = createBrowserRouter([
   {
     path : '/user/create',
     element : <App><Create/></App>
-  },
-  
+  }
 ])
 
 ReactDOM.createRoot(document.getElementById('root')).render(
