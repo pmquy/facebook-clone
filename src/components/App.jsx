@@ -7,6 +7,7 @@ export default function App({children}) {
   const [user, setUser] = useUser();
   const [isDark, setIsDark] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);   
   const queryClient = new QueryClient();  
 
   return (
@@ -18,6 +19,8 @@ export default function App({children}) {
         setIsDark : setIsDark,
         isDarkMode : isDarkMode,
         setIsDarkMode: setIsDarkMode,
+        isHeaderHidden : isHeaderHidden,
+        setIsHeaderHidden : setIsHeaderHidden,
       }}>
         <QueryClientProvider client={queryClient}>
           {children}
