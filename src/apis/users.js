@@ -1,5 +1,5 @@
 const login = async (user) => {
-  const res = await fetch('http://localhost:3000/users', {
+  const res = await fetch('http://192.168.2.5:3000/users', {
     method:'POST',
     mode : 'cors',
     headers: {
@@ -15,7 +15,7 @@ const login = async (user) => {
 }
 
 const getUserById = async id => {
-  const user = await fetch(`http://localhost:3000/users/${id}`, {
+  const user = await fetch(`http://192.168.2.5:3000/users/${id}`, {
     method:'GET',
     mode : 'cors',
     headers: {
@@ -28,7 +28,7 @@ const getUserById = async id => {
 }
 
 const createUser = async (user) => {
-  const res = await fetch('http://localhost:3000/users/create', {
+  const res = await fetch('http://192.168.2.5:3000/users/create', {
     method:'POST',
     mode : 'cors',
     headers: {
@@ -44,7 +44,7 @@ const createUser = async (user) => {
 }
 
 const updateUserById = async (id, queries) => {
-  const res = await fetch(`http://localhost:3000/users/${id}`, {
+  const res = await fetch(`http://192.168.2.5:3000/users/${id}`, {
     method:'PATCH',
     mode : 'cors',
     headers: {

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {CommonContexts} from '../contexts/contexts'
-import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import {useUser} from '../hooks/useUser';
+import { socket } from '../socket';
 
 export default function App({children}) {
   const [user, setUser] = useUser();
@@ -9,6 +10,18 @@ export default function App({children}) {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);   
   const queryClient = new QueryClient();  
+
+  useEffect(() => {
+    const listener = id => {
+      if(user && user._id == id) {
+        setUser(null);        
+      }
+    }
+    socket.on('someone login', listener)
+    return () => {
+      socket.off('someone login', listener);
+    }
+  }, [])
 
   return (
     <>

@@ -1,5 +1,5 @@
 const getMessages = async (queries={}) => {
-  const res = await fetch('http://localhost:3000/messages', {
+  const res = await fetch('http://192.168.2.5:3000/messages', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -12,7 +12,7 @@ const getMessages = async (queries={}) => {
 }
 
 const createMessage = async message => {
-  const res = await fetch('http://localhost:3000/messages/create', {
+  const res = await fetch('http://192.168.2.5:3000/messages/create', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -25,7 +25,7 @@ const createMessage = async message => {
 }
 
 const deleteMessageById = async id => {
-  const res = await fetch(`http://localhost:3000/messages/${id}`, {
+  const res = await fetch(`http://192.168.2.5:3000/messages/${id}`, {
     method : 'DELETE',
     headers : {
       'Accept' : 'application/json',

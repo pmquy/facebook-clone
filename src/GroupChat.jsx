@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { socket } from "./socket";
 import {getMessages, createMessage} from "../src/apis/message"
 import { useQuery } from "react-query";
@@ -7,12 +7,12 @@ import Message from "./components/Message";
  
 export default function GroupChat() {
   const {user} = useContext(CommonContexts);
-  const [isQueryAgain, setIsQueryAgain] = useState(true);
-  const {isLoading, error, data:messages, refetch} = useQuery(['group chat', isQueryAgain], () => getMessages({}))
+  const {isLoading, error, data:messages, refetch} = useQuery(['group chat'], () => getMessages({}))
   const messageRef = useRef();
 
   useEffect(() => {
-    window.scrollTo(0, document.body.scrollHeight)
+    if(messageRef.current)
+      messageRef.current.scrollIntoView();
   }, [messages])
 
   useEffect(() => {

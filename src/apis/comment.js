@@ -1,5 +1,5 @@
 const getComments = async (queries={}) => {
-  const res = await fetch('http://localhost:3000/comments', {
+  const res = await fetch('http://192.168.2.5:3000/comments', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -12,7 +12,7 @@ const getComments = async (queries={}) => {
 }
 
 const createComment = async comment => {
-  const res = await fetch('http://localhost:3000/comments/create', {
+  const res = await fetch('http://192.168.2.5:3000/comments/create', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -25,7 +25,7 @@ const createComment = async comment => {
 }
 
 const deleteCommentById = async id => {
-  const res = await fetch(`http://localhost:3000/comments/${id}`, {
+  const res = await fetch(`http://192.168.2.5:3000/comments/${id}`, {
     method : 'DELETE',
     headers : {
       'Accept' : 'application/json',
