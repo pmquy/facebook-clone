@@ -1,5 +1,5 @@
 const addPost = async (post) => {
-  const res = await fetch('http://localhost:3000/posts/create', {
+  const res = await fetch('http://192.168.2.5:3000/posts/create', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -12,7 +12,7 @@ const addPost = async (post) => {
 }
 
 const getPosts = async (queries={}) => {
-  const res = await fetch('http://localhost:3000/posts', {
+  const res = await fetch('http://192.168.2.5:3000/posts', {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -25,7 +25,7 @@ const getPosts = async (queries={}) => {
 }
 
 const deletePostById = async (id) => {
-  const res = await fetch(`http://localhost:3000/posts/${id}`, {
+  const res = await fetch(`http://192.168.2.5:3000/posts/${id}`, {
     method : 'DELETE',
     headers : {
       'Accept' : 'application/json',
