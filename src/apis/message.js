@@ -1,7 +1,7 @@
-import { localhost, toQuery} from "../utils/utils";
+import {localhost, toQuery} from '../utils/utils'
 
-const getComments = async (queries={}) => {
-  const res = await fetch(`${localhost}:3000/comments${toQuery(queries)}`, {
+const getMessages = async (queries={}) => {
+  const res = await fetch(`${localhost}:3000/messages${toQuery(queries)}`, {
     method : 'GET',
     headers : {
       'Accept' : 'application/json',
@@ -12,21 +12,21 @@ const getComments = async (queries={}) => {
   return res;
 }
 
-const createComment = async comment => {
-  const res = await fetch(`${localhost}:3000/comments/create`, {
+const createMessage = async message => {
+  const res = await fetch(`${localhost}:3000/messages/create`, {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
       'Content-Type' : 'application/json',
     },
-    body : JSON.stringify(comment)
+    body : JSON.stringify(message)
   })
     .then(val => val.json());
   return res;
 }
 
-const deleteCommentById = async id => {
-  const res = await fetch(`${localhost}:3000/comments/${id}`, {
+const deleteMessageById = async id => {
+  const res = await fetch(`${location}:3000/messages/${id}`, {
     method : 'DELETE',
     headers : {
       'Accept' : 'application/json',
@@ -37,4 +37,4 @@ const deleteCommentById = async id => {
   return res;
 }
 
-export {getComments, createComment, deleteCommentById};
+export {getMessages, createMessage, deleteMessageById};

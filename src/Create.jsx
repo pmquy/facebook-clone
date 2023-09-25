@@ -20,8 +20,10 @@ export default function Login() {
       setCreateState(3);
     else {
       const user = await createUser({username:username, password:password});
-      if(!user)
+      if(!user) {
         setCreateState(4);
+        return;
+      }
       setUser(user);
       navigate('/');
     }

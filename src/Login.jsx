@@ -1,10 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "./apis/users";
 import { CommonContexts } from "./contexts/contexts";
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const usernameRef = useRef();
   const passwordRef = useRef();
   const [loginState, setLoginState] = useState(0);
@@ -26,12 +27,19 @@ export default function Login() {
       setLoginState(3);
     else {
       const user = await login({username:username, password:password});
-      if(!user)
+      if(!user) {
         setLoginState(4);
+        return;
+      }
       usernameRef.current.value = '';
       passwordRef.current.value = '';
       setUser(user);
-      navigate('/');
+      if(location.state && location.state.from) {
+        navigate(location.state.from);
+      }
+      else {
+        navigate('/');
+      }
     }
   }
 

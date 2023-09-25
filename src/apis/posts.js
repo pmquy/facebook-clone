@@ -1,5 +1,7 @@
+import { localhost, toQuery } from "../utils/utils";
+
 const addPost = async (post) => {
-  const res = await fetch('http://localhost:3000/posts/create', {
+  const res = await fetch(`${localhost}:3000/posts/create`, {
     method : 'POST',
     headers : {
       'Accept' : 'application/json',
@@ -12,16 +14,27 @@ const addPost = async (post) => {
 }
 
 const getPosts = async (queries={}) => {
-  const res = await fetch('http://localhost:3000/posts', {
-    method : 'POST',
+  const res = await fetch(`${localhost}:3000/posts${toQuery(queries)}`, {
+    method : 'GET',
     headers : {
       'Accept' : 'application/json',
       'Content-Type' : 'application/json',
     },
-    body : JSON.stringify(queries)
   })
     .then(val => val.json());
   return res;
 }
 
-export {addPost, getPosts}
+const deletePostById = async (id) => {
+  const res = await fetch(`${localhost}:3000/posts/${id}`, {
+    method : 'DELETE',
+    headers : {
+      'Accept' : 'application/json',
+      'Content-Type' : 'application/json',
+    },
+  })
+    .then(val => val.json());
+  return res;
+}
+
+export {addPost, getPosts, deletePostById}
