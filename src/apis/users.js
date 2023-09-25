@@ -1,23 +1,27 @@
+import { localhost, toQuery } from "../utils/utils";
+
 const login = async (user) => {
-  const res = await fetch('http://192.168.2.5:3000/users', {
-    method:'POST',
-    mode : 'cors',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body : JSON.stringify(user),
-  })
-    .then(val => val.json());
+  const res = await getUsers(user);
   if(res.length == 0)
     return null;
   return res[0];
 }
 
-const getUserById = async id => {
-  const user = await fetch(`http://192.168.2.5:3000/users/${id}`, {
+const getUsers = async (queries = {}) => {
+  const res = await fetch(`${localhost}:3000/users${toQuery(queries)}`, {
     method:'GET',
-    mode : 'cors',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(val => val.json());
+  return res;
+}
+
+const getUserById = async id => {
+  const user = await fetch(`${localhost}:3000/users/${id}`, {
+    method:'GET',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -28,9 +32,8 @@ const getUserById = async id => {
 }
 
 const createUser = async (user) => {
-  const res = await fetch('http://192.168.2.5:3000/users/create', {
+  const res = await fetch(`${localhost}:3000/users/create`, {
     method:'POST',
-    mode : 'cors',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
@@ -44,9 +47,8 @@ const createUser = async (user) => {
 }
 
 const updateUserById = async (id, queries) => {
-  const res = await fetch(`http://192.168.2.5:3000/users/${id}`, {
+  const res = await fetch(`${localhost}:3000/users/${id}`, {
     method:'PATCH',
-    mode : 'cors',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json'

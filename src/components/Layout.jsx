@@ -32,7 +32,7 @@ export default function Layout({children, index}) {
   return (
     <div className="bg-zinc-800 text-white">
       
-      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-10 transition-all fixed top-0`}>
+      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-20 transition-all fixed top-0`}>
         <Header index={index}></Header>
       </div>
 

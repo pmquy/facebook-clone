@@ -1,3 +1,13 @@
+const localhost = 'http://192.168.2.5';
+
+function toQuery(query={}) {
+    var res = '?';
+    for(var x in query) {    
+        res += `${x}=${query[x]}&`
+    }
+    return res;
+}
+
 function formatDate(dateString) {
   let date = new Date(dateString),
       day = '' + date.getDate(),
@@ -22,4 +32,4 @@ function formatDate(dateString) {
   return hour + ':' + minute + ':' + second + ' - ' + day + ':' + month + ':' + year;
 }
 
-export {formatDate}
+export {formatDate, localhost, toQuery}

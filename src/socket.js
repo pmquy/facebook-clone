@@ -1,2 +1,3 @@
 import {io}  from "socket.io-client";
-export const socket = io('http://192.168.2.5:3000')
+import { localhost } from "./utils/utils";
+export const socket = io(`${localhost}:3000`)
