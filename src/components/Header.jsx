@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { CommonContexts, ClickOutSideContext } from "../contexts/contexts"
 import { Link } from "react-router-dom";
+import ImageComponent from "./ImageComponent";
 
 export default function Header({index}) {  
   const {user, setUser} = useContext(CommonContexts);  
@@ -162,7 +163,9 @@ export default function Header({index}) {
           </div>
           
           <div ref={parentRef4} onClick={() => setState4(true)} className='p-2 transition-all  group relative' href="/"> 
-            <img src={user.photoURL} className='w-10 rounded-full'></img>
+            <div className="w-10 rounded-full h-10">
+              <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
+            </div>
             <div className={state4 ? 'hidden':' bg-slate-400 rounded-lg overflow-hidden absolute max-h-0 duration-500  group-hover:max-h-full transition-all right-0 translate-y-3'}>
               <div className=" relative after:absolute after:h-1 after:w-0  after:bottom-0 after:delay-500 after:duration-500 group-hover:after:w-full after:transition-all after:bg-green-600">
                 <p className='p-3 whitespace-nowrap'>Tài khoản</p>

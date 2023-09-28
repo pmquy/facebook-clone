@@ -9,7 +9,7 @@ import UserImage from "./UserImage";
 
 export default function Comment({comment}) {
   const navigate = useNavigate();
-  const {isLoading : isLoading1, error : error1, data : commentUser} = useQuery(['commentUser', comment], () => getUserById(comment.userId));
+  const {isLoading : isLoading1, error : error1, data : commentUser} = useQuery(['user', comment.userId], () => getUserById(comment.userId));
   const {user} = useContext(CommonContexts);
 
   const deleteComment = async () => {

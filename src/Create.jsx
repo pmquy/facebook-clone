@@ -2,42 +2,40 @@ import { useContext, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { createUser } from "./apis/users";
 import { CommonContexts } from "./contexts/contexts";
+import { createImage, deleteImageById } from "./apis/image";
 
-export default function Login() {
+export default function Create() {
   const navigate = useNavigate();
   const usernameRef = useRef();
   const passwordRef = useRef();
-  const [createState, setCreateState] = useState(0);
-  const {setUser} = useContext(CommonContexts);
-  const handleLogin = async () => {
-    const username = usernameRef.current.value;
-    const password = passwordRef.current.value;
-    if(!username && !password)
-      setCreateState(1);
-    else if(!username)
-      setCreateState(2);
-    else if(!password)
-      setCreateState(3);
-    else {
-      const user = await createUser({username:username, password:password});
-      if(!user) {
-        setCreateState(4);
-        return;
-      }
-      setUser(user);
-      navigate('/');
+  const avtRef = useRef();
+  const {setUser} = useContext(CommonContexts);  
+ 
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if(!usernameRef.current.value || !passwordRef.current.value || avtRef.current.files.length == 0) {
+      alert("Không được để trống");
+      return;
+    }    
+    const formData = new FormData();
+    formData.append('image', avtRef.current.files[0]); 
+    const avt = await createImage(formData)
+    const user = await createUser({username: usernameRef.current.value, password:passwordRef.current.value, avt:avt._id});
+    if(!user) {
+      alert('Tài khoản đã tồn tại');
+      await deleteImageById(avt._id);
+      return;
     }
+    setUser(user);
+    navigate('/');  
   }
 
   return (
     <div className=" min-h-screen bg-zinc-800 flex flex-row justify-center items-center">
-      <form onSubmit={async (e) => {e.preventDefault(); await handleLogin()}} className=" flex flex-col justify-center items-center p-10 border-2 border-white rounded-lg">
-        <input ref={usernameRef} placeholder="username" className={`${(createState==1 || createState==2) ? ' border-2 border-red-600' : ''} box-border p-3 indent-4 rounded-lg my-2`}></input>                
-        <input ref={passwordRef} placeholder="password" className={`${(createState==1 || createState==3) ? ' border-2 border-red-600' : ''} box-border p-3 indent-4 rounded-lg my-2`}></input>                
-        {createState==4 && 
-        <div className=" text-white"> 
-          Tài khoản đã tồn tại
-        </div>}
+      <form onSubmit={handleCreate} className=" flex flex-col justify-center items-center p-10 border-2 border-white rounded-lg">
+        <input ref={usernameRef} placeholder="username" className="p-4 rounded-lg my-2"></input>                
+        <input ref={passwordRef} placeholder="password" className="p-4 rounded-lg my-2" ></input>
+        <input type="file" ref={avtRef} className="p-4 rounded-lg my-2"></input>                        
         <input type="submit" value={'Create'} className=" cursor-pointer my-2 rounded-lg p-3 bg-blue-600 w-full hover:bg-blue-800 transition-all"></input>
         <button onClick={() => {navigate('/user/login');}} className=" cursor-pointer my-2 rounded-lg p-3 bg-green-600 hover:bg-green-800 transition-all">Login</button>
       </form>
