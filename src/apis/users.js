@@ -38,7 +38,7 @@ const createUser = async (user) => {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body : JSON.stringify({photoURL : 'https://t2.genius.com/unsafe/375x0/https%3A%2F%2Fimages.genius.com%2F4e68b153e20cc5c4d4a06f9945eeafca.1000x1000x1.jpg', ...user}),
+    body : JSON.stringify(user),
   })
     .then(val => val.json());
   if(Object.keys(res) == 0)
@@ -47,13 +47,11 @@ const createUser = async (user) => {
 }
 
 const updateUserById = async (id, queries) => {
-  const res = await fetch(`${localhost}:3000/users/${id}`, {
+  const res = await fetch(`${localhost}:3000/users/${id}${toQuery(queries)}`, {
     method:'PATCH',
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body : JSON.stringify(queries),
+    }
   })
     .then(val => val.json());
   return res;

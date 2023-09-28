@@ -5,7 +5,8 @@ import {ClickOutSideContext, CommonContexts} from './contexts/contexts'
 import { useQuery } from "react-query";
 import { Link } from 'react-router-dom';
 import UserImage from './components/UserImage';
-
+import ImageComponent from './components/ImageComponent';
+import { createImage } from './apis/image';
 
 export default function Home() {
   const {user, setIsDark, isDark, isHeaderHidden} = useContext(CommonContexts);
@@ -13,6 +14,7 @@ export default function Home() {
   const ref1 = useRef();const parentRef1 = useRef();
   clickOutSide([ref1, parentRef1], () => setState1(false));
   const inputRef = useRef();
+  const imgRef = useRef();
   const [state1, setState1] = useState(false);
   const {isLoading, error, data, refetch} = useQuery(['posts'], () => getPosts({}));
 
@@ -39,11 +41,13 @@ export default function Home() {
   return (
     <div>
 
-      <div className={`hidden lg:block ${isDark ? 'pointer-events-none brightness-50' : ''} `}>
-        <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{height:'80vh'}}>  
+      <div className={`hidden lg:block ${isDark ? 'hidden pointer-events-none brightness-50' : ''} `}>
+        <div className={` bg-blue-600 group w-24 hover:w-60 transition-all px-2 rounded-lg fixed left-2 flex flex-col hover:overflow-y-auto overflow-hidden `} style={{maxHeight:'80vh'}}>  
           
           <Link to={`/user/${user._id}`} className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
-            <img src={user.photoURL} className=' rounded-full w-10'></img>
+            <div className="w-10 rounded-full h-10">
+              <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
+            </div> 
             <p className=' hidden group-hover:block'>{user.username}</p>
           </Link>          
           
@@ -102,13 +106,13 @@ export default function Home() {
 
       <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} flex flex-row justify-center`}>              
         <div className='lg:basis-6/12 flex flex-col basis-11/12'>          
-          <div className={`p-4 bg-blue-600 rounded-lg my-5 flex z-10 sticky ${isHeaderHidden ? 'top-0 ' : 'top-16'} transition-all flex-row gap-5`}>
+          <div className={`p-4 bg-blue-600 rounded-lg my-5 flex z-10 sticky ${isHeaderHidden ? 'top-0 ' : 'top-16'} items-center transition-all flex-row gap-5`}>
             <UserImage user={user}/>
             <input ref={ref1} onClick={() => setState1(true)} readOnly className=' indent-4 h-full text-white outline-none placeholder:text-white w-full rounded-3xl bg-stone-400' placeholder={`${user.username} ơi, bạn đang nghĩ gì thế?`}></input>   
           </div>
 
           {data.map(element => <div key={element._id} className='my-5'>
-            <Post className='' post={element}/>
+            <Post post={element}/>
           </div>)}
         </div>
       </div>
@@ -118,7 +122,9 @@ export default function Home() {
         <p className=' font-bold text-3xl border-b-2 my-2 text-center py-2'>Tạo bài viết</p>
         
         <div className=' flex flex-row items-center gap-2 my-5'>
-          <img src={user.photoURL} className=' rounded-full w-12'></img>                
+          <div className="w-12 rounded-full h-12">
+            <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
+          </div>             
           <div className=' flex flex-col justify-center'>
             <p>{user.username}</p>
             <select name='access-modifier' form='myForm' className=' bg-green-600 text-black rounded-lg'>
@@ -129,26 +135,40 @@ export default function Home() {
           </div>
         </div>
         
-        <form className='w-full my-2' id='myForm' 
+        <form className='w-full my-2' id='myForm'
           onSubmit={async (e) => {
-            e.preventDefault();
-            if(inputRef.current.value) {
-              await addPost({text : inputRef.current.value, userId : user._id})
-              refetch();
-              setState1(false);
-              inputRef.current.value = '';
+            e.preventDefault();            
+            if(inputRef.current.value=='' && imgRef.current.files.length == 0) {
+              alert('Bài viết trống');
+              return;
             }
-          }}>
-          <textarea ref={inputRef} form='myForm' name='text' rows={5} className=' indent-4  text-white outline-none placeholder:text-white w-full bg-stone-400'></textarea>
+            let imgId = '';
+            if(imgRef.current.files.length != 0) {
+              const formData = new FormData();
+              formData.append('image', imgRef.current.files[0]);
+              const t = await createImage(formData);                      
+              imgRef.current.value = '';
+              if(t._id) {
+                imgId = t._id;
+              }
+            }
+            await addPost({text : inputRef.current.value, userId : user._id, img : imgId})
+            inputRef.current.value = ''
+            refetch();
+            setState1(false);            
+        }}>
+
+          <textarea ref={inputRef} rows={5} className=' indent-4  text-white outline-none placeholder:text-white w-full bg-stone-400'></textarea>
           
           <div className=' rounded-xl p-5 border-2 my-2 flex flex-row lg:justify-between justify-center items-center'>
             <p className='hidden lg:block'>Thêm vào bài viết của bạn</p>
             <div className=' flex flex-row lg:justify-center  items-center'>
                 <div className=' group relative p-2 rounded-full hover:bg-slate-400'>
-                  <img className=' w-10' src='/image.png'></img>
+                  <img onClick={() => imgRef.current.click()} className=' w-10' src='/image.png'></img>
                   <div className=' absolute whitespace-nowrap left-1/2 -translate-x-1/2 -translate-y-32 rounded-xl p-5 bg-slate-400 hidden group-hover:block'>
                     Ảnh/Video
                   </div>
+                  <input ref={imgRef} type='file' className=' hidden'></input>
                 </div>
                 <div className=' group relative p-2 rounded-full hover:bg-slate-400'>
                   <img className=' w-10' src='/tag.png'></img>

@@ -8,6 +8,7 @@ import { formatDate } from "../utils/utils";
 import { deletePostById } from "../apis/posts";
 import { useNavigate } from "react-router-dom";
 import UserImage from "./UserImage";
+import ImageComponent from "./ImageComponent";
 
 export default function Post ({post}) {
   const navigate = useNavigate();
@@ -20,8 +21,8 @@ export default function Post ({post}) {
   clickOutSide([parentRef, ref], () => {setIsPostReading(false)});  
 
   const inputRef = useRef();
-  const {isLoading : isLoading1, error : error1, data : postUser, refetch:refetch1} = useQuery(['postUser', post], () => getUserById(post.userId));  
-  const {isLoading : isLoading2, error : error2, data : postComments, refetch:refetch2} = useQuery(['postComments', post], () => getComments({postId : post._id}))
+  const {isLoading : isLoading1, error : error1, data : postUser, refetch:refetch1} = useQuery(['user', post.userId], () => getUserById(post.userId));  
+  const {isLoading : isLoading2, error : error2, data : postComments, refetch:refetch2} = useQuery(['comments', post._id], () => getComments({postId : post._id}))
 
   useEffect(() => {
     if(isPostReading) {
@@ -51,19 +52,17 @@ export default function Post ({post}) {
   
   return (
     <div>
-      {post.userId == user._id && 
-        <div className=" group relative">
-          <button className="absolute right-0 top-0 w-12 rounded-full hover:bg-slate-400 transition-all">
-            <img src="/dots.png"></img>
-          </button>
-          <div className="hidden group-hover:block absolute -translate-y-full rounded-lg top-0 right-0 bg-green-600 p-5">
-            <button onClick={deletePost} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
-          </div>
-        </div>      
-      }
-
-      <div className="p-4 bg-neutral-700 rounded-lg flex flex-col">
-        
+      <div className="p-4 bg-neutral-700 rounded-lg flex flex-col">        
+        {post.userId == user._id && 
+          <div className=" group relative">
+            <button className="absolute right-0 top-0 w-12 rounded-full hover:bg-slate-400 transition-all">
+              <img src="/dots.png"></img>
+            </button>
+            <div className="hidden group-hover:block absolute -translate-y-full rounded-lg top-0 right-0 bg-green-600 p-5">
+              <button onClick={deletePost} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
+            </div>
+          </div>      
+        }
         <div className=" flex flex-row gap-1 items-center">
           <UserImage user={postUser}/>
           <div>
@@ -74,7 +73,13 @@ export default function Post ({post}) {
 
         <div className=" my-5 border-b-2 border-white"></div>
         
-        <p>{post.text}</p>
+        {post.text && <p className=" my-2">
+          {post.text}  
+        </p>}
+
+        {post.img && <div className=" w-full my-2">
+          <ImageComponent id={post.img}></ImageComponent>  
+        </div>}
        
         <div className="py-2 flex flex-row justify-between">
           

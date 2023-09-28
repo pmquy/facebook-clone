@@ -23,22 +23,23 @@ export default function Layout({children, index}) {
       navigate('/user/login', {state : {from : location.pathname}});
     }
   }, [user])  
-
-  if(!user)
-    return (
-      <div className=" min-h-screen bg-zinc-800"></div>
-    )
-
+  
   return (
-    <div className="bg-zinc-800 text-white">
-      
-      <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-20 transition-all fixed top-0`}>
-        <Header index={index}></Header>
-      </div>
-
-      <div className='mt-16 min-h-screen py-10'>
-        {children}
-      </div>
+    <div>
+      {
+        user?
+        <div className="bg-zinc-800 text-white">    
+          <div className={`${isDark ? 'brightness-50 pointer-events-none' : ''} ${isHeaderHidden ? ' -translate-y-full' : ''} z-20 transition-all fixed top-0`}>
+            <Header index={index}></Header>
+          </div>
+    
+          <div className='mt-16 min-h-screen py-10'>
+            {children}
+          </div>
+        </div>
+        :
+        <div className=" min-h-screen bg-zinc-800"></div>
+      }
     </div>
   )
 }

@@ -1,3 +1,6 @@
 export default function Gaming() {
-  return <></>
+  return (
+    <div>    
+    </div>
+  )
 }

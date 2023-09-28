@@ -7,7 +7,7 @@ import Message from "./components/Message";
  
 export default function GroupChat() {
   const {user} = useContext(CommonContexts);
-  const {isLoading, error, data:messages, refetch} = useQuery(['group chat'], () => getMessages({}))
+  const {isLoading, error, data:messages, refetch} = useQuery(['messages'], () => getMessages({}))
   const messageRef = useRef();
 
   useEffect(() => {
