@@ -163,7 +163,7 @@ export default function Header({index}) {
           </div>
           
           <div ref={parentRef4} onClick={() => setState4(true)} className='p-2 transition-all  group relative' href="/"> 
-            <div className="w-10 rounded-full h-10">
+            <div className="w-10 rounded-full h-10 overflow-hidden">
               <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
             </div>
             <div className={state4 ? 'hidden':' bg-slate-400 rounded-lg overflow-hidden absolute max-h-0 duration-500  group-hover:max-h-full transition-all right-0 translate-y-3'}>

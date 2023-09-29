@@ -14,6 +14,7 @@ export default function App({children}) {
   useEffect(() => {
     const listener = id => {
       if(user && user._id == id) {
+        alert("Tài khoản bạn đã được đăng nhập nơi khác")      
         setUser(null);        
       }
     }

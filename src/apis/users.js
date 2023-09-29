@@ -46,12 +46,14 @@ const createUser = async (user) => {
   return res;
 }
 
-const updateUserById = async (id, queries) => {
-  const res = await fetch(`${localhost}:3000/users/${id}${toQuery(queries)}`, {
+const updateUserById = async (id, queries = {}) => {
+  const res = await fetch(`${localhost}:3000/users/${id}`, {
     method:'PATCH',
     headers: {
       'Accept': 'application/json',
-    }
+      'Content-Type' : 'application/json'
+    },
+    body : JSON.stringify(queries)
   })
     .then(val => val.json());
   return res;

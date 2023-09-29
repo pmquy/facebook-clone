@@ -20,7 +20,7 @@ export default function GroupChat() {
       refetch();
     }
     socket.on('someone chat', listener)
-    return () => {socket.off('someone chat', listener)}
+    return () => socket.off('someone chat', listener)
   }, [])
   
   const handleCreateMessage = async () => {
