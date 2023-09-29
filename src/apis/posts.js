@@ -29,7 +29,7 @@ const deletePostById = async (id) => {
   const res = await fetch(`${localhost}:3000/posts/${id}`, {
     method : 'DELETE',
     headers : {
-      'Accept' : 'application/json',
+      'Accept' : 'application/json',  
       'Content-Type' : 'application/json',
     },
   })
@@ -37,4 +37,17 @@ const deletePostById = async (id) => {
   return res;
 }
 
-export {addPost, getPosts, deletePostById}
+const updatePostById = async (id, queries) => {
+  const res = await fetch(`${localhost}:3000/posts/${id}`, {
+    method : 'PATCH',
+    headers : {
+      'Accept' : 'application/json',
+      'Content-Type' : 'application/json',
+    },
+    body : JSON.stringify(queries)
+  })
+    .then(val => val.json());
+  return res;
+}
+
+export {addPost, getPosts, deletePostById, updatePostById}

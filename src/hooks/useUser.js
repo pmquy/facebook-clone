@@ -12,7 +12,7 @@ function useUser() {
       localStorage.setItem('user', user == null ? '' : JSON.stringify(user));
     }
     catch(e) {
-
+        
     }
   }, [user]);
 

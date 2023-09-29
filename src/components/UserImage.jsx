@@ -5,7 +5,7 @@ export default function UserImage({user}) {
   return (
     <div className="group relative">
       <Link to={`/user/${user._id}`}>
-        <div className="w-12 rounded-full h-12">
+        <div className="w-12 rounded-full h-12 overflow-hidden">
           <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
         </div>                      
       </Link>
