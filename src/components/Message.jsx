@@ -28,7 +28,7 @@ export default function Message({message}) {
         
         <div className=" flex flex-row items-center gap-5 justify-start">
           <UserImage user={messageUser}/>
-          <div className="group bg-green-600 hover:bg-green-800 rounded-lg p-4 relative">
+          <div className="group bg-blue-600 hover:bg-green-800 rounded-lg p-4 relative">
             <p>{message.text}</p>
             <div className=" hidden group-hover:block right-0 top-0 -translate-y-full p-2 bg-slate-400 rounded-lg absolute whitespace-nowrap">
               {formatDate(message.createAt)}

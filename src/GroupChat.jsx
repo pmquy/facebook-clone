@@ -24,7 +24,7 @@ export default function GroupChat() {
   }, [])
   
   const handleCreateMessage = async () => {
-    if(messageRef.current && messageRef.current.value) {
+    if(messageRef.current && messageRef.current.value.trim()) {
       await createMessage({text : messageRef.current.value, userId : user._id});
       socket.emit('someone chat');
       messageRef.current.value = '';

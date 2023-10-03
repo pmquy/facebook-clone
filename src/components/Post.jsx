@@ -86,7 +86,7 @@ export default function Post ({post}) {
 
             <div className=" my-5 border-b-2 border-white"></div>
             
-            {post.text && <p className=" my-2">
+            {post.text && <p className=" break-all my-2">
               {post.text}  
             </p>}
 
@@ -138,7 +138,7 @@ export default function Post ({post}) {
           </div>
           
           <div ref={parentRef} className={`${isPostReading ? 'block' : 'hidden'} z-10 rounded-lg fixed left-1/2 -translate-x-1/2 overflow-y-auto w-11/12 lg:w-2/3 top-32`} style={{maxHeight:'70vh'}}>
-            <div className=" p-10 bg-green-600 rounded-lg flex flex-col">
+            <div className=" p-10 bg-blue-600 rounded-lg flex flex-col">
               
               <form onSubmit={async e => {e.preventDefault(); await addComment();}}>
                 <div className=" flex flex-row items-center gap-2 ">

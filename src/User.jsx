@@ -1,26 +1,33 @@
 import { useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom"
 import { getUserById, updateUserById } from "./apis/users";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { CommonContexts } from "./contexts/contexts";
 import { getPosts } from "./apis/posts";
 import Post from './components/Post'
 import ImageComponent from "./components/ImageComponent";
 import { updateImageById } from "./apis/image";
+import { socket } from "./socket";
 
 export default function User() {
   const {id} = useParams();
   const navigate = useNavigate();
-  const {isLoading, error, data:pageUser, refetch} = useQuery(['user', id], () => getUserById(id));
+  const {isLoading, error, data:pageUser, refetch:refetchUser} = useQuery(['user', id], () => getUserById(id));
   const {isLoading:isLoading1, error:error1, data:posts, refetch:refetch1} = useQuery(['posts', id],() => getPosts({userId : id}))
   const {user, setUser} = useContext(CommonContexts);
   const newPasswordRef = useRef();
   const newAvtRef = useRef();
   
-  if(isLoading || error || isLoading1 || error1) {
-    return <></>
-  }
-
+  useEffect(() => {
+    const listener = () => {
+      refetch1();
+    }
+    socket.on('change home', listener);
+    return () => {
+      socket.off('change home', listener);
+    }
+  })
+  
   const handleChange = async e => {
     e.preventDefault();
     const newPassword = newPasswordRef.current.value;    
@@ -46,12 +53,16 @@ export default function User() {
     newAvtRef.current.value = ''
     navigate(0);
   }
+  
+  if(isLoading || error || isLoading1 || error1) {
+    return <></>
+  }
 
   return (
     <div>
       <div className=" flex flex-col items-center">
         <div className=" flex flex-row items-center justify-center gap-10 mb-10">          
-          <div className="w-40 rounded-full h-40">
+          <div className="w-40 rounded-full h-40 overflow-hidden">
             <ImageComponent id={pageUser.avt} isRound={true}></ImageComponent>      
           </div>
           <div className=" flex flex-col">

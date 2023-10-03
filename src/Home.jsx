@@ -15,10 +15,11 @@ export default function Home() {
   const ref1 = useRef(); const parentRef1 = useRef();
   clickOutSide([ref1, parentRef1], () => setState1(false));
   const inputRef = useRef();
-  const imgRef = useRef();
+  const inputImgRef = useRef();
   const [state1, setState1] = useState(false);
+  const [tempImg, setTempImg] = useState(null);
   const {isLoading, error, data, refetch:refetchPosts} = useQuery(['posts'], () => getPosts({}));
-
+  
   useEffect(() => {
     if(inputRef.current && ref1.current) {
       inputRef.current.focus();
@@ -43,6 +44,42 @@ export default function Home() {
       socket.off('change home', listener);
     }
   }, [])
+
+  const createPost = async (e) => {
+    e.preventDefault();            
+    if(inputRef.current.value=='' && inputImgRef.current.files.length == 0) {
+      alert('Bài viết trống');
+      return;
+    }
+    let imgId = '';
+    if(inputImgRef.current.files.length != 0) {
+      const formData = new FormData();
+      formData.append('image', inputImgRef.current.files[0]);
+      const t = await createImage(formData);                      
+      inputImgRef.current.value = '';
+      if(t._id) {
+        imgId = t._id;
+      }
+    }
+    await addPost({text : inputRef.current.value, userId : user._id, img : imgId})
+    inputRef.current.value = ''
+    socket.emit('change home');
+    setState1(false);
+    setTempImg(null);            
+  }
+
+  const handleChange = e => {
+    if(e.target.files && e.target.files[0]) {
+      setTempImg(URL.createObjectURL(e.target.files[0]));
+    }
+  }
+
+  const handleDeleteTempImg = e => {
+    // prevent useClickOutSide because the remove div is absolute not included to parent div
+    e.stopPropagation();
+    inputImgRef.current.value = '';
+    setTempImg(null);  
+  }
   
   return (
     <div>
@@ -56,7 +93,7 @@ export default function Home() {
               
               <Link to={`/user/${user._id}`} className=' whitespace-nowrap border-2 border-black flex flex-row my-2 rounded-lg gap-5 p-2 items-center hover:bg-slate-400 transition-all'>
                 <div className="w-10 rounded-full overflow-hidden h-10">
-                  <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
+                  <ImageComponent id={user.avt}></ImageComponent>      
                 </div> 
                 <p className=' hidden group-hover:block'>{user.username}</p>
               </Link>          
@@ -127,13 +164,13 @@ export default function Home() {
             </div>
           </div>
           
-          <div ref={parentRef1} className={`${state1 ? '' : 'hidden'} z-20 fixed w-4/6 rounded-lg bg-zinc-600 p-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}>
+          <div ref={parentRef1} className={`${state1 ? '' : 'hidden'} z-20 fixed w-4/6 max-h-[80vh] overflow-y-scroll  rounded-lg bg-zinc-600 p-10 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2`}>
             
-            <p className=' font-bold text-3xl border-b-2 my-2 text-center py-2'>Tạo bài viết</p>
+            <p className=' font-bold text-3xl border-b-2 text-center py-2'>Tạo bài viết</p>
             
             <div className=' flex flex-row items-center gap-2 my-5'>
-              <div className="w-12 rounded-full h-12">
-                <ImageComponent id={user.avt} isRound={true}></ImageComponent>      
+              <div className="w-12 rounded-full h-12 overflow-hidden">
+                <ImageComponent id={user.avt}></ImageComponent>      
               </div>             
               <div className=' flex flex-col justify-center'>
                 <p>{user.username}</p>
@@ -145,40 +182,23 @@ export default function Home() {
               </div>
             </div>
             
-            <form className='w-full my-2' id='myForm'
-              onSubmit={async (e) => {
-                e.preventDefault();            
-                if(inputRef.current.value=='' && imgRef.current.files.length == 0) {
-                  alert('Bài viết trống');
-                  return;
-                }
-                let imgId = '';
-                if(imgRef.current.files.length != 0) {
-                  const formData = new FormData();
-                  formData.append('image', imgRef.current.files[0]);
-                  const t = await createImage(formData);                      
-                  imgRef.current.value = '';
-                  if(t._id) {
-                    imgId = t._id;
-                  }
-                }
-                await addPost({text : inputRef.current.value, userId : user._id, img : imgId})
-                inputRef.current.value = ''
-                socket.emit('change home');
-                setState1(false);            
-            }}>
-
-              <textarea ref={inputRef} rows={5} className=' indent-4  text-white outline-none placeholder:text-white w-full bg-stone-400'></textarea>
-              
+            <form className='w-full my-2 flex flex-col' id='myForm' onSubmit={createPost}>
+              <textarea ref={inputRef} rows={5} className='my-2 indent-4 rounded-lg  text-white outline-none placeholder:text-white w-full bg-stone-400'></textarea>              
+              {tempImg && <div className=' flex flex-row justify-center'>
+                  <div className=' w-1/2 relative'>
+                    <img src={tempImg} className='rounded-lg'></img>                            
+                    <img src='/remove.png' onClick={handleDeleteTempImg} className='absolute right-0 top-0 w-10 hover:bg-blue-600 rounded-full bg-white'></img>
+                  </div>
+              </div>}
               <div className=' rounded-xl p-5 border-2 my-2 flex flex-row lg:justify-between justify-center items-center'>
                 <p className='hidden lg:block'>Thêm vào bài viết của bạn</p>
                 <div className=' flex flex-row lg:justify-center  items-center'>
                     <div className=' group relative p-2 rounded-full hover:bg-slate-400'>
-                      <img onClick={() => imgRef.current.click()} className=' w-10' src='/image.png'></img>
+                      <img onClick={() => inputImgRef.current.click()} className=' w-10' src='/image.png'></img>
                       <div className=' absolute whitespace-nowrap left-1/2 -translate-x-1/2 -translate-y-32 rounded-xl p-5 bg-slate-400 hidden group-hover:block'>
                         Ảnh/Video
                       </div>
-                      <input ref={imgRef} type='file' className=' hidden'></input>
+                      <input ref={inputImgRef} onChange={handleChange} type='file' className=' hidden'></input>
                     </div>
                     <div className=' group relative p-2 rounded-full hover:bg-slate-400'>
                       <img className=' w-10' src='/tag.png'></img>
@@ -211,10 +231,8 @@ export default function Home() {
                       </div>
                     </div>
                 </div>
-              </div>
-              
+              </div>          
               <input type='submit' form='myForm' value={'Đăng'} className=' w-full p-2 bg-blue-600 rounded-lg hover:bg-blue-800 hover:rounded-3xl transition-all'></input>
-
             </form>
 
           </div>
