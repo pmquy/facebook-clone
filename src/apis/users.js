@@ -20,6 +20,8 @@ const getUsers = async (queries = {}) => {
 }
 
 const getUserById = async id => {
+  if(!id)
+    return null;
   const user = await fetch(`${localhost}:3000/users/${id}`, {
     method:'GET',
     headers: {
@@ -28,7 +30,7 @@ const getUserById = async id => {
     }
   })
     .then(val => val.json());
-  return user;
+  return Object.keys(user).length ? user : null;
 }
 
 const createUser = async (user) => {

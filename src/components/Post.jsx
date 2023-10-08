@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getUserById } from "../apis/users";
 import {getComments, createComment} from "../apis/comment";
 import { ClickOutSideContext, CommonContexts } from "../contexts/contexts";
@@ -12,18 +12,56 @@ import useLikePost from '../hooks/useLikePost'
 import {socket} from '../socket'
 
 export default function Post ({post}) {
+  const queryClient = useQueryClient();
   const {user, setUser} = useContext(CommonContexts);
   const [isPostReading, setIsPostReading] = useState(false);
   const inputRef = useRef();
-  const [like, setLike] = useLikePost(post, user, setUser)
+  const [like, setLike] = useLikePost(post, user, setUser, queryClient)
   
   const ref = useRef();
   const parentRef = useRef();
   const clickOutSide = useContext(ClickOutSideContext);
   clickOutSide([parentRef, ref], () => {setIsPostReading(false)});  
   
-  const {isLoading : isLoading1, error : error1, data : postUser} = useQuery(['user', post.userId], () => getUserById(post.userId));  
-  const {isLoading : isLoading2, error : error2, data : postComments, refetch:refetchComments} = useQuery(['comments', post._id], () => getComments({postId : post._id}))
+  const userQuery = useQuery(['user', post.userId], () => getUserById(post.userId));  
+  const commentsQuery = useQuery(['comments', post._id], () => getComments({postId : post._id}))
+  
+  const muation = useMutation({
+    mutationFn : createComment,
+    onSuccess : () => {
+      queryClient.invalidateQueries({
+        queryKey : ['comments', post._id]
+      });
+      socket.emit('dataUpdate', {
+        queryKey : ['comments', post._id],
+      });
+    }
+  })
+
+  const addComment = async() => {
+    if(inputRef.current.value) {
+      muation.mutate({userId : user._id, postId : post._id, text : inputRef.current.value});    
+      inputRef.current.value = '';
+    } else {
+      alert('Không được để trống')
+    }
+  }
+  
+  const mutationHome = useMutation({
+    mutationFn : deletePostById,
+    onSuccess : () => {
+      queryClient.invalidateQueries({
+        queryKey : ['posts'],
+      })
+      socket.emit('dataUpdate', {
+        queryKey : ['posts']
+      })
+    }
+  })
+
+  const deletePost = async() => {
+    mutationHome.mutate(post._id);    
+  }
   
   useEffect(() => {
     if(isPostReading) {
@@ -33,35 +71,10 @@ export default function Post ({post}) {
       document.body.style.overflow = 'auto';
     }
   }, [isPostReading])
-
-  useEffect(() => {
-    const listener = id => {      
-      if(post._id == id) {      
-        refetchComments();
-      }
-    }
-    socket.on('change post', listener)
-    return () => {
-      socket.off('change post', listener);
-    }
-  }, [])
-
-  const addComment = async() => {
-    if(inputRef.current.value) {
-      await createComment({userId : user._id, postId : post._id, text : inputRef.current.value});
-      socket.emit('change post', post._id);
-      inputRef.current.value = '';
-    }
-  }
-
-  const deletePost = async() => {
-    await deletePostById(post._id);
-    socket.emit('change home');
-  }
   
   return (
     <div>
-      {isLoading1 || isLoading2 || error1 || error2 ?
+      {userQuery.isError || userQuery.isError || commentsQuery.isError || commentsQuery.isLoading ?
         <></>
         :
         <div>
@@ -77,9 +90,9 @@ export default function Post ({post}) {
               </div>      
             }
             <div className=" flex flex-row gap-1 items-center">
-              <UserImage user={postUser}/>
+              <UserImage user={userQuery.data}/>
               <div>
-                <p className=" text-2xl">{postUser.username}</p>
+                <p className=" text-2xl">{userQuery.data.username}</p>
                 <p>{formatDate(post.createAt)}</p>
               </div>
             </div>
@@ -104,7 +117,7 @@ export default function Post ({post}) {
               <div className=" flex flex-row gap-5 items-center">
                 <div className="flex flex-row gap-1">
                   <img src="/comment.png" className="w-6"></img>       
-                  <p>{postComments.length}</p>
+                  <p>{commentsQuery.data.length}</p>
                 </div>
 
                 <div className="flex flex-row items-center gap-1">
@@ -147,7 +160,7 @@ export default function Post ({post}) {
                 </div>
               </form>
 
-              {postComments.map(e => (
+              {commentsQuery.data.map(e => (
                 <div key={e._id} className=" my-5">
                   <Comment comment={e}></Comment>
                 </div>

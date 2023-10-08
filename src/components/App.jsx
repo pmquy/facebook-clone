@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import {CommonContexts} from '../contexts/contexts'
-import { QueryClient, QueryClientProvider } from 'react-query';
 import {useUser} from '../hooks/useUser';
+import { useQueryClient } from 'react-query';
 import { socket } from '../socket';
 
 export default function App({children}) {
   const [user, setUser] = useUser();
   const [isDark, setIsDark] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [isHeaderHidden, setIsHeaderHidden] = useState(false);   
-  const queryClient = new QueryClient();  
+  const [isHeaderHidden, setIsHeaderHidden] = useState(false);
+      
 
   useEffect(() => {
     const listener = id => {
@@ -24,8 +24,17 @@ export default function App({children}) {
     }
   }, [])
 
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const listener = data => {
+      queryClient.invalidateQueries(data.queryKey); 
+    }
+    socket.on('dataUpdate', listener)
+    return () => socket.off('dataUpdate', listener);
+  }, [])
+
   return (
-    <>
+    <div>
       <CommonContexts.Provider value={{
         user : user,
         setUser : setUser,
@@ -35,11 +44,9 @@ export default function App({children}) {
         setIsDarkMode: setIsDarkMode,
         isHeaderHidden : isHeaderHidden,
         setIsHeaderHidden : setIsHeaderHidden,
-      }}>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </CommonContexts.Provider>
-    </>
+      }}>  
+        {children}    
+      </CommonContexts.Provider>   
+    </div>   
   )
 }

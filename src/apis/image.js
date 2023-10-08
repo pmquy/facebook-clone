@@ -46,7 +46,7 @@ const getImageById = async id => {
   return res;
 }
 
-const updateImageById = async (id, formData, queries) => {
+const updateImageById = async ({id, formData, ...queries}) => {
   const res = await fetch(`${localhost}:3000/images/${id}${toQuery(queries)}`, {
     method : 'PATCH',
     headers : {

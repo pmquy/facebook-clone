@@ -17,12 +17,12 @@ export default function Layout({children, index}) {
     document.addEventListener('scroll', listener)
     return () => document.removeEventListener('scroll', listener)
   }, [])  
-
+  
   useEffect(() => {
     if(!user) {
       navigate('/user/login', {state : {from : location.pathname}});
     }
-  }, [user])  
+  }, [user])
   
   return (
     <div>

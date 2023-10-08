@@ -1,25 +1,36 @@
-import { useQuery } from "react-query"
+import { useMutation, useQuery, useQueryClient } from "react-query"
 import { getUserById } from "../apis/users"
 import {formatDate} from '../utils/utils';
 import { deleteCommentById } from "../apis/comment";
-import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CommonContexts } from "../contexts/contexts";
 import UserImage from "./UserImage";
 import { socket } from "../socket";
 
 export default function Comment({comment}) {
-  const {isLoading : isLoading1, error : error1, data : commentUser} = useQuery(['user', comment.userId], () => getUserById(comment.userId));
+  const userQuery = useQuery(['user', comment.userId], () => getUserById(comment.userId));
   const {user} = useContext(CommonContexts);
-
-  const deleteComment = async () => {
-    await deleteCommentById(comment._id);
-    socket.emit('change post', comment.postId);
+  
+  const queryClient = useQueryClient();
+  const muation = useMutation({
+    mutationFn : deleteCommentById,
+    onSuccess : () => {
+      queryClient.invalidateQueries({
+        queryKey : ['comments', comment.postId],
+      })
+      socket.emit('dataUpdate', {
+        queryKey : ['comments', comment.postId],
+      })
+    }
+  })
+  
+  const deleteComment = () => {
+    muation.mutate(comment._id);  
   }
   
   return (
     <div>
-      {isLoading1 || error1 ? 
+      {userQuery.isLoading || userQuery.isError ? 
         <></>
         :
         <div className=" bg-zinc-700 rounded-lg p-5">
@@ -37,9 +48,9 @@ export default function Comment({comment}) {
 
           <div>
             <div className=" flex flex-row items-center gap-2 p-2 border-b border-white mb-2">
-              <UserImage user={commentUser}/>
+              <UserImage user={userQuery.data}/>
               <div>
-                <p>{commentUser.username}</p>
+                <p>{userQuery.data.username}</p>
                 <p>{formatDate(comment.createAt)}</p>
               </div>
             </div>
