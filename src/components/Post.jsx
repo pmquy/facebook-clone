@@ -8,24 +8,54 @@ import { formatDate } from "../utils/utils";
 import { deletePostById } from "../apis/posts";
 import UserImage from "./UserImage";
 import ImageComponent from "./ImageComponent";
-import useLikePost from '../hooks/useLikePost'
 import {socket} from '../socket'
+import { getUserLikePost, deleteUserLikePost, createUserLikePost} from "../apis/userLikePost";
+
 
 export default function Post ({post}) {
   const queryClient = useQueryClient();
-  const {user, setUser} = useContext(CommonContexts);
+  const {user} = useContext(CommonContexts);
   const [isPostReading, setIsPostReading] = useState(false);
   const inputRef = useRef();
-  const [like, setLike] = useLikePost(post, user, setUser, queryClient)
-  
   const ref = useRef();
   const parentRef = useRef();
   const clickOutSide = useContext(ClickOutSideContext);
   clickOutSide([parentRef, ref], () => {setIsPostReading(false)});  
+  const [like, setLike] = useState(null);
+
+  const changeLike = async () => {
+    if(like != null) {
+      if(like) {
+        await deleteUserLikePost({userId : user._id, postId : post._id});
+      } else {
+        await createUserLikePost({userId : user._id, postId : post._id});
+      }
+      setLike(!like);
+    }
+  }
+
+  const mutationLike = useMutation({
+    mutationFn : changeLike,
+    onSuccess : () => {
+      queryClient.invalidateQueries({
+        queryKey : ['posts'],
+      })
+      socket.emit('dataUpdate', {
+        queryKey : ['posts']
+      })
+    }
+  })
+
+  const userLikePostQuery = useQuery({
+    queryKey : ['likePost', user._id, post._id],
+    queryFn : async () => {
+      const res = await getUserLikePost({userId : user._id, postId : post._id});
+      setLike(res ? true : false);
+    }
+  })
   
   const userQuery = useQuery(['user', post.userId], () => getUserById(post.userId));  
   const commentsQuery = useQuery(['comments', post._id], () => getComments({postId : post._id}))
-  
   const muation = useMutation({
     mutationFn : createComment,
     onSuccess : () => {
@@ -59,10 +89,6 @@ export default function Post ({post}) {
     }
   })
 
-  const deletePost = async() => {
-    mutationHome.mutate(post._id);    
-  }
-  
   useEffect(() => {
     if(isPostReading) {
       document.body.style.overflow = 'hidden';
@@ -74,7 +100,7 @@ export default function Post ({post}) {
   
   return (
     <div>
-      {userQuery.isError || userQuery.isError || commentsQuery.isError || commentsQuery.isLoading ?
+      {userLikePostQuery.isLoading || userLikePostQuery.isError || userQuery.isError || userQuery.isError || commentsQuery.isError || commentsQuery.isLoading ?
         <></>
         :
         <div>
@@ -85,7 +111,7 @@ export default function Post ({post}) {
                   <img src="/dots.png"></img>
                 </button>
                 <div className="hidden group-hover:block absolute -translate-y-full rounded-lg top-0 right-0 bg-green-600 p-5">
-                  <button onClick={deletePost} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
+                  <button onClick={() => {mutationHome.mutate(post._id)}} className=" bg-red-600 hover:bg-red-800 transition-all p-2 rounded-lg">Delete Post</button>
                 </div>
               </div>      
             }
@@ -130,7 +156,7 @@ export default function Post ({post}) {
 
             <div className=" border-t-2 border-white flex flex-row justify-between py-2 font-bold">
               
-              <button onClick={() => {setLike(!like)}} className="flex flex-row px-6 lg:px-10 py-3 hover:bg-slate-400 rounded-lg transition-all items-center gap-2">
+              <button onClick={() => mutationLike.mutate()} className="flex flex-row px-6 lg:px-10 py-3 hover:bg-slate-400 rounded-lg transition-all items-center gap-2">
                 <div className={like ? 'animate-like' : ''}>
                   <img src={like? '/liked.svg' : '/like.svg'} className="w-6"></img>
                 </div>

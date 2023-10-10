@@ -27,7 +27,9 @@ export default function App({children}) {
   const queryClient = useQueryClient();
   useEffect(() => {
     const listener = data => {
-      queryClient.invalidateQueries(data.queryKey); 
+      queryClient.invalidateQueries({
+        queryKey : data.queryKey,
+      }); 
     }
     socket.on('dataUpdate', listener)
     return () => socket.off('dataUpdate', listener);
