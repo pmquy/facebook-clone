@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createUser } from "./apis/users";
 import { CommonContexts } from "./contexts/contexts";
 import { createImage, deleteImageById } from "./apis/image";
+import { toast } from "react-toastify";
 
 export default function Create() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function Create() {
   const handleCreate = async (e) => {
     e.preventDefault();
     if(!usernameRef.current.value || !passwordRef.current.value || avtRef.current.files.length == 0) {
-      alert("Không được để trống");
+      toast.warning("Không được để trống");
       return;
     }    
     const formData = new FormData();
@@ -22,10 +23,11 @@ export default function Create() {
     const avt = await createImage(formData)
     const user = await createUser({username: usernameRef.current.value, password:passwordRef.current.value, avt:avt._id});
     if(!user) {
-      alert('Tài khoản đã tồn tại');
+      toast.warning('Tài khoản đã tồn tại');
       await deleteImageById(avt._id);
       return;
     }
+    toast.success('Tạo tài khoản thành công!')
     setUser(user);
     navigate('/');  
   }

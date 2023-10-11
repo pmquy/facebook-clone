@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom";
 import { login } from "./apis/users";
 import { CommonContexts } from "./contexts/contexts";
+import {toast} from "react-toastify"
 
 export default function Login() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function Login() {
     const username = usernameRef.current.value;
     const password = passwordRef.current.value;
     if(!username || !password) {
-      alert("Không được để trống")
+      toast.warning("Không được để trống")
     }
     else {
       const user = await login({username:username, password:password});
@@ -30,10 +31,10 @@ export default function Login() {
       usernameRef.current.value = '';
       passwordRef.current.value = '';
       setUser(user);
+      toast.success("Login successfully!");
       if(location.state && location.state.from) {
         navigate(location.state.from);
-      }
-      else {
+      } else {
         navigate('/');
       }
     }

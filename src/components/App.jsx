@@ -3,6 +3,7 @@ import {CommonContexts} from '../contexts/contexts'
 import {useUser} from '../hooks/useUser';
 import { useQueryClient } from 'react-query';
 import { socket } from '../socket';
+import {toast} from 'react-toastify'
 
 export default function App({children}) {
   const [user, setUser] = useUser();
@@ -14,7 +15,7 @@ export default function App({children}) {
   useEffect(() => {
     const listener = id => {
       if(user && user._id == id) {
-        alert("Tài khoản bạn đã được đăng nhập nơi khác")      
+        toast.warning("Tài khoản bạn đã được đăng nhập nơi khác!");
         setUser(null);        
       }
     }

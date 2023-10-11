@@ -10,6 +10,7 @@ import UserImage from "./UserImage";
 import ImageComponent from "./ImageComponent";
 import {socket} from '../socket'
 import { getUserLikePost, deleteUserLikePost, createUserLikePost} from "../apis/userLikePost";
+import { toast } from "react-toastify";
 
 
 export default function Post ({post}) {
@@ -50,7 +51,7 @@ export default function Post ({post}) {
     queryKey : ['likePost', user._id, post._id],
     queryFn : async () => {
       const res = await getUserLikePost({userId : user._id, postId : post._id});
-      setLike(res ? true : false);
+      setLike(res.length ? true : false);
     }
   })
   
@@ -73,7 +74,7 @@ export default function Post ({post}) {
       muation.mutate({userId : user._id, postId : post._id, text : inputRef.current.value});    
       inputRef.current.value = '';
     } else {
-      alert('Không được để trống')
+      toast.warning('Không được để trống')
     }
   }
   

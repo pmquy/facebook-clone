@@ -8,6 +8,7 @@ import UserImage from './components/UserImage';
 import ImageComponent from './components/ImageComponent';
 import { createImage } from './apis/image';
 import { socket } from './socket';
+import {toast} from "react-toastify"
 
 export default function Home() {
   const {user, setIsDark, isDark, isHeaderHidden} = useContext(CommonContexts);
@@ -30,10 +31,14 @@ export default function Home() {
   const mutation = useMutation({
     mutationFn : addPost,
     onSuccess : () => {
+      toast.success("Create post successfully!")
       queryClient.invalidateQueries({queryKey:['posts']})
       socket.emit('dataUpdate', {
         queryKey : ['posts'],
       });
+    },
+    onError : () => {
+      toast.error("Create post failed!")
     }
   })
 
@@ -55,7 +60,7 @@ export default function Home() {
   const createPost = async (e) => {
     e.preventDefault();            
     if(inputRef.current.value=='' && inputImgRef.current.files.length == 0) {
-      alert('Bài viết trống');
+      toast.warning("Bài viết trống!")
       return;
     }
     let imgId = '';

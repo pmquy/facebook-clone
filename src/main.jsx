@@ -15,6 +15,8 @@ import App from './components/App'
 import User from './User'
 import GroupChat from './GroupChat'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import {ToastContainer} from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -67,5 +69,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router}></RouterProvider>
     </QueryClientProvider>
+    <ToastContainer autoClose={2000} pauseOnHover={false}/>
   </React.StrictMode>
 )
