@@ -4,6 +4,7 @@ import {getMessages, createMessage} from "../src/apis/message"
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { CommonContexts } from "./contexts/contexts";
 import Message from "./components/Message";
+import { toast } from "react-toastify";
  
 export default function GroupChat() {
   const {user} = useContext(CommonContexts);
@@ -34,7 +35,7 @@ export default function GroupChat() {
       messageRef.current.value = '';
     }
     else {
-      alert('Không để tin nhắn trống')
+      toast.warning('Không để tin nhắn trống')
     }
   }
   
